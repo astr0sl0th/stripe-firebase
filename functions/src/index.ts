@@ -43,3 +43,18 @@ export const createCharge = functions.https.onRequest(
     }
   }
 );
+
+export const subscribeCustomer = functions.https.onRequest(
+  async (request, response) => {
+    try {
+      const newSubscription = await stripe.subscriptions.create(request.body);
+      return response.send({
+        message: 'Subscription successful',
+        subscriptionId: newSubscription.id
+      });
+    } catch (error) {
+      handleError(response, error);
+      return;
+    }
+  }
+);
