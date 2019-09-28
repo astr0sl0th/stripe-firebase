@@ -26,3 +26,20 @@ export const createCustomer = functions.https.onRequest(
     }
   }
 );
+
+export const createCharge = functions.https.onRequest(
+  async (request, response) => {
+    try {
+      const newCharge = await stripe.charges.create(request.body);
+      const capturedCharged = await stripe.charges.capture(newCharge.id);
+
+      return response.send({
+        message: 'Your card has been charged successfully',
+        chargeId: capturedCharged.id
+      });
+    } catch (error) {
+      handleError(response, error);
+      return;
+    }
+  }
+);
